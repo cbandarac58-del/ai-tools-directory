@@ -1,0 +1,82 @@
+---
+interface Props {
+  tool: {
+    title: string;
+    slug: string;
+    description: string;
+    category: string;
+    subCategory: string;
+    pricingType: string;
+    tags: string[];
+    image: string;
+  };
+}
+
+const { tool } = Astro.props;
+---
+
+<article class="group relative bg-slate-900/30 border border-slate-800/60 rounded-2xl overflow-hidden hover:border-indigo-500/50 hover:bg-slate-900/50 transition-all duration-300 flex flex-col shadow-lg hover:shadow-indigo-500/5 hover:-translate-y-1">
+  <!-- Image Header -->
+  <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+    <img 
+      src={tool.image} 
+      alt={`${tool.title} Review`} 
+      class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 opacity-90 group-hover:opacity-100"
+      loading="lazy"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-[#0b0f19] via-transparent to-transparent opacity-80"></div>
+    
+    <!-- Pricing badge -->
+    <span class={`absolute top-3 right-3 text-[11px] font-semibold px-2.5 py-1 rounded-lg border backdrop-blur-md shadow-md ${
+      tool.pricingType === 'Free' 
+        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
+        : tool.pricingType === 'Freemium'
+        ? 'bg-amber-500/10 text-amber-400 border-amber-500/20'
+        : 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20'
+    }`}>
+      {tool.pricingType}
+    </span>
+  </div>
+
+  <!-- Content -->
+  <div class="p-5 flex-grow flex flex-col justify-between">
+    <div>
+      <!-- Category & Subcategory -->
+      <span class="text-xs text-indigo-400 font-semibold tracking-wide uppercase">
+        {tool.category} &bull; {tool.subCategory}
+      </span>
+      
+      <!-- Title -->
+      <h3 class="mt-2 text-xl font-bold font-outfit text-white group-hover:text-indigo-300 transition-colors">
+        <a href={`/tools/${tool.slug}`}>
+          <span class="absolute inset-0 z-10"></span>
+          {tool.title}
+        </a>
+      </h3>
+      
+      <!-- Description -->
+      <p class="mt-2 text-sm text-slate-400 line-clamp-2">
+        {tool.description}
+      </p>
+    </div>
+
+    <div class="mt-4 pt-4 border-t border-slate-800/40">
+      <!-- Tags & Action -->
+      <div class="flex items-center justify-between gap-4">
+        <div class="flex flex-wrap gap-1.5 overflow-hidden max-h-6">
+          {tool.tags.slice(0, 2).map((tag) => (
+            <span class="text-[10px] bg-slate-800/40 text-slate-400 px-2 py-0.5 rounded-md border border-slate-800/30">
+              #{tag}
+            </span>
+          ))}
+        </div>
+        <span class="text-xs font-semibold text-indigo-400 group-hover:text-indigo-300 inline-flex items-center gap-1 shrink-0">
+          Read Review
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </span>
+      </div>
+    </div>
+  </div>
+</article>

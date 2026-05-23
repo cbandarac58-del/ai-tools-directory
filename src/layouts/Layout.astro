@@ -1,0 +1,141 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+  schema?: string; // Optional JSON-LD schema string
+}
+
+const { title, description, schema } = Astro.props;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site || 'https://aitoolsindex.com');
+---
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- SEO Meta Tags -->
+    <title>{title} | AI Tools Directory</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={`${title} | AI Tools Directory`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&h=630&q=80" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalUrl} />
+    <meta property="twitter:title" content={`${title} | AI Tools Directory`} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=1200&h=630&q=80" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Schema Markup -->
+    {schema && <script type="application/ld+json" set:html={schema} />}
+    
+    <!-- AdSense Auto Ads Placeholder (simulated for AdSense Approval) -->
+    <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+  </head>
+  <body class="bg-[#0b0f19] text-slate-100 font-sans min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white antialiased">
+    
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-50 bg-[#0b0f19]/80 backdrop-blur-md border-b border-slate-800/60">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+          <div class="flex items-center">
+            <a href="/" class="flex items-center gap-2 group">
+              <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:scale-105 transition-transform duration-300">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5  text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <span class="font-outfit font-extrabold text-xl tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">
+                AIPioneer<span class="text-indigo-400">Hub</span>
+              </span>
+            </a>
+          </div>
+          
+          <nav class="hidden md:flex space-x-8">
+            <a href="/" class="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Directory</a>
+            <a href="/category/development" class="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Development</a>
+            <a href="/category/design" class="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Design</a>
+            <a href="/category/audio" class="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">Audio</a>
+          </nav>
+          
+          <div class="flex items-center gap-4">
+            <a href="/contact" class="hidden sm:inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-xl text-sm font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 shadow-md shadow-indigo-600/10 hover:shadow-indigo-500/20 transition-all duration-300 hover:-translate-y-0.5">
+              Submit a Tool
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow">
+      <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-[#070a12] border-t border-slate-900 mt-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+          <div class="md:col-span-2">
+            <a href="/" class="flex items-center gap-2 mb-4">
+              <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <span class="font-outfit font-extrabold text-lg tracking-tight bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
+                AIPioneerHub
+              </span>
+            </a>
+            <p class="text-sm text-slate-400 max-w-sm">
+              Discover and review the latest and most powerful AI tools in the market. Helping creators, marketers, and developers find the best software tools to scale productivity.
+            </p>
+          </div>
+          <div>
+            <h3 class="text-sm font-semibold text-slate-200 tracking-wider uppercase mb-4">Categories</h3>
+            <ul class="space-y-2 text-sm text-slate-400">
+              <li><a href="/category/development" class="hover:text-white transition-colors">Development</a></li>
+              <li><a href="/category/design" class="hover:text-white transition-colors">Design Art</a></li>
+              <li><a href="/category/audio" class="hover:text-white transition-colors">Audio & Voice</a></li>
+              <li><a href="/category/video" class="hover:text-white transition-colors">Video Tools</a></li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-sm font-semibold text-slate-200 tracking-wider uppercase mb-4">Mandatory Compliance</h3>
+            <ul class="space-y-2 text-sm text-slate-400">
+              <li><a id="footer-about-link" href="/about" class="hover:text-white transition-colors">About Us</a></li>
+              <li><a id="footer-contact-link" href="/contact" class="hover:text-white transition-colors">Contact Us</a></li>
+              <li><a id="footer-privacy-link" href="/privacy" class="hover:text-white transition-colors">Privacy Policy</a></li>
+            </ul>
+          </div>
+        </div>
+        
+        <div class="border-t border-slate-900 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p class="text-xs text-slate-500">
+            &copy; {new Date().getFullYear()} AIPioneerHub. All rights reserved. Google AdSense disclaimer: This site uses cookies for personalized advertising.
+          </p>
+          <div class="flex space-x-6 text-xs text-slate-500">
+            <span>Powered by Astro & Tailwind</span>
+          </div>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

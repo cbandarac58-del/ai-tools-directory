@@ -1,0 +1,59 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AdPlacement from '../components/AdPlacement.astro';
+
+const pageTitle = "About Us - AIPioneerHub AI Indexing & Curation";
+const pageDescription = "Learn more about AIPioneerHub's mission to discover, test, review, and index the world's most innovative artificial intelligence software tools.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Breadcrumbs -->
+    <nav class="flex text-sm text-slate-500 mb-6 font-medium">
+      <a href="/" class="hover:text-indigo-400">Home</a>
+      <span class="mx-2">&gt;</span>
+      <span class="text-slate-300">About Us</span>
+    </nav>
+
+    <div class="space-y-8">
+      <div class="text-center sm:text-left space-y-4">
+        <h1 class="font-outfit font-extrabold text-4xl sm:text-5xl text-white leading-none">
+          About <span class="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">AIPioneerHub</span>
+        </h1>
+        <p class="text-lg text-slate-400 font-light leading-relaxed">
+          Our mission is to help creators, developers, and entrepreneurs navigate the rapidly expanding landscape of generative artificial intelligence and software solutions.
+        </p>
+      </div>
+
+      <!-- Top ad placement to keep CLS minimized -->
+      <AdPlacement type="top-banner" />
+
+      <div class="bg-slate-900/10 border border-slate-800/40 rounded-3xl p-6 sm:p-10 space-y-6 text-slate-300 leading-relaxed font-light">
+        <h2 class="text-2xl font-bold font-outfit text-white">Our Curation Standards</h2>
+        <p>
+          In a world where dozens of new artificial intelligence systems and applications are launched daily, finding high-quality, reliable software can be overwhelming. AIPioneerHub was founded to solve this problem by establishing a rigorous curation and hands-on review index.
+        </p>
+        
+        <h3 class="text-xl font-bold font-outfit text-white pt-4">How We Review Tools</h3>
+        <p>
+          Every AI tool listed in our directory undergoes a structured review pipeline:
+        </p>
+        <ul class="list-disc pl-6 space-y-2">
+          <li><strong>Verification:</strong> We verify the platform is fully operational, active, and accessible to public users.</li>
+          <li><strong>Testing:</strong> We run standard text, design, voice, or video prompts to analyze latency, output resolution, and instruction compliance.</li>
+          <li><strong>Pricing Audit:</strong> We analyze pricing models to clarify what is accessible under Free plans, Freemium subscriptions, and where Hidden Costs lie.</li>
+          <li><strong>Gemini Integration & Rewrite:</strong> To ensure completely original, high-value, and search-optimized coverage, basic scraped metrics are processed via advanced LLM rewriting pipelines, producing unique specifications, pros, cons, and helpful FAQs.</li>
+        </ul>
+
+        <h3 class="text-xl font-bold font-outfit text-white pt-4">Editorial Philosophy</h3>
+        <p>
+          We believe in objectivity. While we use programmatic assistance and AI summarization scripts to index lists quickly, all specifications, pros, cons, and FAQs are structurally vetted to maintain high standards of factual accuracy. This ensures that our visitors can trust our directory for their professional workflows.
+        </p>
+        
+        <p class="pt-4 border-t border-slate-900 text-xs text-slate-500">
+          AIPioneerHub is supported through clean, non-intrusive Google AdSense advertising. We maintain strict compliance with Google Publisher Policies. For inquiries, partnerships, or tool listings, visit our <a href="/contact" class="text-indigo-400 hover:underline">Contact Page</a>.
+        </p>
+      </div>
+    </div>
+  </div>
+</Layout>

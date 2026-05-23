@@ -1,0 +1,338 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AdPlacement from '../../components/AdPlacement.astro';
+import { getCollection, getEntry } from 'astro:content';
+
+// Generate static paths for all tools
+export async function getStaticPaths() {
+  const tools = await getCollection('tools');
+  return tools.map((tool) => ({
+    params: { slug: tool.data.slug },
+    props: { tool },
+  }));
+}
+
+const { tool } = Astro.props;
+
+// Fetch related tools in the same category for semantic internal linking (3-5 tools)
+const allTools = await getCollection('tools');
+const relatedTools = allTools
+  .filter(t => t.data.category === tool.data.category && t.data.slug !== tool.data.slug)
+  .slice(0, 3);
+
+// If we don't have enough in the same category, grab from other categories
+if (relatedTools.length < 3) {
+  const additional = allTools
+    .filter(t => t.data.category !== tool.data.category && t.data.slug !== tool.data.slug)
+    .slice(0, 3 - relatedTools.length);
+  relatedTools.push(...additional);
+}
+
+// Construct Product Review Schema Markup
+const productReviewSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Product",
+      "@id": `${Astro.url.href}#product`,
+      "name": tool.data.title,
+      "image": tool.data.image,
+      "description": tool.data.description,
+      "offers": {
+        "@type": "Offer",
+        "price": "0.00",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock",
+        "url": tool.data.websiteUrl
+      },
+      "brand": {
+        "@type": "Brand",
+        "name": tool.data.title
+      },
+      "review": {
+        "@type": "Review",
+        "@id": `${Astro.url.href}#review`,
+        "author": {
+          "@type": "Organization",
+          "name": "AIPioneerHub Editorial",
+          "url": Astro.url.origin
+        },
+        "datePublished": tool.data.dateAdded,
+        "reviewBody": tool.data.longReview,
+        "reviewRating": {
+          "@type": "Rating",
+          "bestRating": "5",
+          "ratingValue": "4.8",
+          "worstRating": "1"
+        }
+      }
+    }
+  ]
+};
+
+// If FAQ exists, add FAQPage schema to the graph
+if (tool.data.faq && tool.data.faq.length > 0) {
+  const faqSchema = {
+    "@type": "FAQPage",
+    "@id": `${Astro.url.href}#faq`,
+    "mainEntity": tool.data.faq.map(item => ({
+      "@type": "Question",
+      "name": item.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.answer
+      }
+    }))
+  };
+  productReviewSchema["@graph"].push(faqSchema);
+}
+
+const schemaJson = JSON.stringify(productReviewSchema);
+---
+
+<Layout 
+  title={`${tool.data.title} AI Tool Review, Features & Specs`} 
+  description={tool.data.description} 
+  schema={schemaJson}
+>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    
+    <!-- Top Ad Placement -->
+    <AdPlacement type="top-banner" />
+
+    <!-- Breadcrumbs -->
+    <nav class="flex text-sm text-slate-500 mb-6 font-medium">
+      <a href="/" class="hover:text-indigo-400">Home</a>
+      <span class="mx-2">&gt;</span>
+      <a href={`/category/${tool.data.category.toLowerCase()}`} class="hover:text-indigo-400">{tool.data.category}</a>
+      <span class="mx-2">&gt;</span>
+      <span class="text-slate-300 truncate">{tool.data.title} Review</span>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Main Content Area -->
+      <div class="lg:col-span-2 space-y-8">
+        
+        <!-- Header Panel -->
+        <div class="relative bg-slate-900/20 border border-slate-800/60 rounded-3xl p-6 sm:p-8 overflow-hidden">
+          <div class="absolute -top-24 -right-24 w-60 h-60 bg-indigo-500/10 rounded-full blur-3xl -z-10"></div>
+          
+          <div class="flex flex-col sm:flex-row gap-6 items-start">
+            <div class="w-full sm:w-48 aspect-video sm:aspect-square rounded-2xl overflow-hidden shrink-0 bg-slate-950 border border-slate-800">
+              <img 
+                src={tool.data.image} 
+                alt={tool.data.title} 
+                class="w-full h-full object-cover"
+              />
+            </div>
+            
+            <div class="flex-grow space-y-3">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-xs font-semibold px-2.5 py-1 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-md uppercase tracking-wider">
+                  {tool.data.category}
+                </span>
+                <span class="text-xs font-semibold px-2.5 py-1 bg-slate-800 text-slate-300 border border-slate-700/50 rounded-md">
+                  {tool.data.pricingType}
+                </span>
+              </div>
+              
+              <h1 class="text-3xl sm:text-4xl font-extrabold font-outfit text-white">
+                {tool.data.title}
+              </h1>
+              
+              <p class="text-slate-400 text-sm sm:text-base leading-relaxed">
+                {tool.data.description}
+              </p>
+              
+              <div class="pt-4 flex flex-wrap gap-3">
+                <a 
+                  href={tool.data.websiteUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-sm font-semibold rounded-xl transition-all shadow-md shadow-indigo-600/10 hover:shadow-indigo-500/25 hover:-translate-y-0.5"
+                >
+                  Visit Official Website
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pros & Cons (Side by Side) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <div class="bg-emerald-950/10 border border-emerald-500/10 rounded-2xl p-6">
+            <h3 class="font-outfit font-bold text-lg text-emerald-400 flex items-center gap-2 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Pros & Advantages
+            </h3>
+            <ul class="space-y-3">
+              {tool.data.pros.map((pro) => (
+                <li class="text-sm text-slate-300 leading-relaxed flex items-start gap-2.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-2 shrink-0"></span>
+                  <span>{pro}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div class="bg-rose-950/10 border border-rose-500/10 rounded-2xl p-6">
+            <h3 class="font-outfit font-bold text-lg text-rose-400 flex items-center gap-2 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Cons & Drawbacks
+            </h3>
+            <ul class="space-y-3">
+              {tool.data.cons.map((con) => (
+                <li class="text-sm text-slate-300 leading-relaxed flex items-start gap-2.5">
+                  <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mt-2 shrink-0"></span>
+                  <span>{con}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Features list -->
+        <div class="bg-slate-900/20 border border-slate-800/60 rounded-2xl p-6 sm:p-8">
+          <h3 class="text-xl font-bold font-outfit text-white mb-6">Key Specifications & Features</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {tool.data.features.map((feature) => (
+              <div class="flex items-start gap-3 bg-slate-950/30 border border-slate-900 rounded-xl p-4">
+                <div class="w-5 h-5 rounded bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-sm text-slate-300 leading-normal">{feature}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Inline Mid-Article Ad Placement -->
+        <AdPlacement type="mid-article" />
+
+        <!-- Editorial Review -->
+        <article class="bg-slate-900/10 border border-slate-800/30 rounded-2xl p-6 sm:p-8 prose prose-invert max-w-none">
+          <h2 class="text-2xl font-bold font-outfit text-white mb-4">AIPioneerHub Hands-On Review</h2>
+          <div class="text-slate-300 text-sm sm:text-base leading-relaxed space-y-4 font-light">
+            {tool.data.longReview.split('\n\n').map(p => <p>{p}</p>)}
+          </div>
+        </article>
+
+        <!-- FAQs (Accoridon format) -->
+        {tool.data.faq && tool.data.faq.length > 0 && (
+          <div class="bg-slate-900/20 border border-slate-800/60 rounded-2xl p-6 sm:p-8">
+            <h3 class="text-xl font-bold font-outfit text-white mb-6">Frequently Asked Questions</h3>
+            <div class="space-y-4">
+              {tool.data.faq.map((item, idx) => (
+                <details class="group bg-slate-950/30 border border-slate-900 rounded-xl p-4 [&_summary::-webkit-details-marker]:hidden" {idx === 0 ? 'open' : ''}>
+                  <summary class="flex items-center justify-between cursor-pointer focus:outline-none">
+                    <h4 class="text-sm sm:text-base font-semibold text-slate-200 group-open:text-indigo-400 transition-colors">
+                      {item.question}
+                    </h4>
+                    <span class="ml-1.5 shrink-0 rounded-full bg-slate-900 border border-slate-800 p-1.5 text-slate-400 group-open:-rotate-180 transition-transform duration-300">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </span>
+                  </summary>
+                  <p class="mt-4 text-sm text-slate-400 leading-relaxed pl-1">
+                    {item.answer}
+                  </p>
+                </details>
+              ))}
+            </div>
+          </div>
+        )}
+
+      </div>
+
+      <!-- Sidebar -->
+      <aside class="w-full space-y-6">
+        
+        <!-- Action Card -->
+        <div class="bg-slate-900/30 border border-slate-800/60 rounded-2xl p-6 text-center space-y-4">
+          <h3 class="font-outfit font-bold text-white text-lg">Direct Tool Link</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">
+            Ready to test out {tool.data.title}? Click the button below to navigate directly to their platform.
+          </p>
+          <a 
+            href={tool.data.websiteUrl} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            class="block w-full text-center px-4 py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold rounded-xl transition-all"
+          >
+            Open Website
+          </a>
+          <span class="text-[10px] text-slate-500 block">Adding to directory: {tool.data.dateAdded}</span>
+        </div>
+
+        <!-- Sidebar Ad Placement -->
+        <AdPlacement type="sidebar" />
+
+        <!-- Tags Card -->
+        <div class="bg-slate-900/20 border border-slate-800/60 rounded-2xl p-5">
+          <h3 class="font-outfit font-bold text-white text-base mb-3">Search Tags</h3>
+          <div class="flex flex-wrap gap-2">
+            {tool.data.tags.map((tag) => (
+              <span class="text-xs bg-slate-800/40 text-slate-400 px-2.5 py-1 rounded-lg border border-slate-800/50">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+
+    <!-- Related Tools Section (Semantic Internal Linking) -->
+    <div class="mt-16 pt-8 border-t border-slate-900">
+      <h3 class="text-2xl font-bold font-outfit text-white mb-8 text-center sm:text-left">
+        Related AI Tools in <span class="text-indigo-400">{tool.data.category}</span>
+      </h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {relatedTools.map((related) => (
+          <article class="group relative bg-slate-900/20 border border-slate-850 rounded-2xl overflow-hidden hover:border-indigo-500/30 hover:bg-slate-900/40 transition-all duration-300 flex flex-col hover:-translate-y-1">
+            <div class="relative aspect-video overflow-hidden">
+              <img 
+                src={related.data.image} 
+                alt={related.data.title} 
+                class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100"
+              />
+              <span class="absolute top-2 right-2 text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-900/80 border border-slate-800 text-indigo-400">
+                {related.data.pricingType}
+              </span>
+            </div>
+            <div class="p-4 flex-grow flex flex-col justify-between">
+              <div>
+                <span class="text-[10px] text-indigo-400 font-semibold tracking-wide uppercase">
+                  {related.data.category}
+                </span>
+                <h4 class="mt-1 font-bold font-outfit text-slate-200 group-hover:text-indigo-300">
+                  <a href={`/tools/${related.data.slug}`}>
+                    <span class="absolute inset-0"></span>
+                    {related.data.title}
+                  </a>
+                </h4>
+                <p class="mt-1.5 text-xs text-slate-400 line-clamp-2">
+                  {related.data.description}
+                </p>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+
+  </div>
+</Layout>

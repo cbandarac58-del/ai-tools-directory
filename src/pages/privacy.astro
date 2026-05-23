@@ -1,0 +1,83 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AdPlacement from '../components/AdPlacement.astro';
+
+const pageTitle = "Privacy Policy - Cookie Disclosure & AdSense Compliance";
+const pageDescription = "Read the AIPioneerHub Privacy Policy. Detailed disclosures on cookie usage, third-party advertising partners, Google AdSense, and personalized tracking policies.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Breadcrumbs -->
+    <nav class="flex text-sm text-slate-500 mb-6 font-medium">
+      <a href="/" class="hover:text-indigo-400">Home</a>
+      <span class="mx-2">&gt;</span>
+      <span class="text-slate-300">Privacy Policy</span>
+    </nav>
+
+    <div class="space-y-8">
+      <div class="text-center sm:text-left space-y-4">
+        <h1 class="font-outfit font-extrabold text-4xl sm:text-5xl text-white leading-none">
+          Privacy <span class="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">Policy</span>
+        </h1>
+        <p class="text-sm sm:text-base text-slate-400 font-light leading-relaxed">
+          Effective date: May 22, 2026. AIPioneerHub values and protects your personal privacy. Below is our comprehensive disclosure regarding data collection, cookie policies, and advertising compliance.
+        </p>
+      </div>
+
+      <!-- Top ad placement -->
+      <AdPlacement type="top-banner" />
+
+      <div class="bg-slate-900/10 border border-slate-800/40 rounded-3xl p-6 sm:p-10 space-y-6 text-slate-300 text-sm sm:text-base leading-relaxed font-light">
+        
+        <h2 class="text-xl font-bold font-outfit text-white">1. Information We Collect</h2>
+        <p>
+          We do not require users to register accounts or provide personal data to browse our AI tools directory. We only collect standard non-identifying telemetry (such as page views, browser type, and country of origin) to optimize site performance.
+        </p>
+        <p>
+          If you send us an inquiry through our Contact Form or via email, we collect your name, email address, and message contents. This data is strictly used to reply to your message and is never sold to third-party marketing companies.
+        </p>
+
+        <h2 class="text-xl font-bold font-outfit text-white pt-4">2. Cookies and Tracking Technologies</h2>
+        <p>
+          AIPioneerHub uses "cookies" (small text files placed on your device) to track user behavior, analyze site performance, and serve personalized advertising. Cookies enable our servers to remember preferences and measure layout effectiveness.
+        </p>
+
+        <h2 class="text-xl font-bold font-outfit text-white pt-4">3. Google AdSense & Third-Party Advertising Disclosures</h2>
+        <div class="bg-indigo-950/20 border border-indigo-500/20 rounded-2xl p-5 space-y-3">
+          <h3 class="font-bold text-white text-sm uppercase tracking-wider">CRITICAL GOOGLE ADSENSE COMPLIANCE NOTICE:</h3>
+          <p class="text-xs text-indigo-300 leading-relaxed">
+            - Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to your website or other websites.
+          </p>
+          <p class="text-xs text-indigo-300 leading-relaxed">
+            - Google's use of advertising cookies enables it and its partners to serve ads to your users based on their visit to your sites and/or other sites on the Internet.
+          </p>
+          <p class="text-xs text-indigo-300 leading-relaxed">
+            - Users may opt out of personalized advertising by visiting <a href="https://settings.google.com/ads" target="_blank" rel="noopener noreferrer" class="underline text-indigo-400 hover:text-indigo-300">Google Ads Settings</a>. (Alternatively, you can direct users to opt out of a third-party vendor's use of cookies for personalized advertising by visiting <a href="https://www.aboutads.info/choices" target="_blank" rel="noopener noreferrer" class="underline text-indigo-400 hover:text-indigo-300">www.aboutads.info</a>.)
+          </p>
+        </div>
+        <p>
+          Other third-party ad networks or servers may also place cookies on your device to measure the performance of their advertisements and personalize the advertising content you see. AIPioneerHub has no access to or control over these cookies used by third-party advertisers.
+        </p>
+
+        <h2 class="text-xl font-bold font-outfit text-white pt-4">4. Log Files and Analytics</h2>
+        <p>
+          Like standard web servers, we maintain log files containing IP addresses, internet service provider (ISP), date/time stamps, referring/exit pages, and click metrics. This data is purely analytical and is not linked to any personally identifiable information.
+        </p>
+
+        <h2 class="text-xl font-bold font-outfit text-white pt-4">5. User Choices & Data Deletion</h2>
+        <p>
+          You can choose to disable or selectively turn off our cookies or third-party cookies in your browser settings. However, this can affect how you are able to interact with our website or other websites. 
+        </p>
+        <p>
+          If you have sent us any messages and want us to purge your email address from our records, please reach out to <a href="mailto:brazilmarketing1@gmail.com" class="text-indigo-400 hover:underline">brazilmarketing1@gmail.com</a>.
+        </p>
+
+        <h2 class="text-xl font-bold font-outfit text-white pt-4">6. Consent</h2>
+        <p>
+          By using our website, you hereby consent to our Privacy Policy and agree to its terms and cookie tracking disclosures.
+        </p>
+      </div>
+    </div>
+  </div>
+</Layout>

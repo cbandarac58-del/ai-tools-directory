@@ -1,0 +1,65 @@
+---
+interface Props {
+  type: 'top-banner' | 'sidebar' | 'mid-article';
+  id?: string;
+}
+
+const { type, id = `ad-${Math.random().toString(36).substr(2, 9)}` } = Astro.props;
+
+// Determine size and classes based on type to prevent CLS (Cumulative Layout Shift)
+let containerClasses = "";
+let label = "Advertisement";
+let minHeightStyle = "";
+
+switch (type) {
+  case 'top-banner':
+    // Leaderboard ad (728x90 desktop, 320x50 mobile)
+    containerClasses = "w-full max-w-4xl mx-auto my-6 bg-slate-900/40 border border-slate-800/40 rounded-xl overflow-hidden flex items-center justify-center flex-col";
+    minHeightStyle = "min-height: 90px; aspect-ratio: 728/90;";
+    break;
+  case 'sidebar':
+    // Rectangle/Skyscraper (300x250 or 300x600)
+    containerClasses = "w-full max-w-[300px] mx-auto my-4 bg-slate-900/40 border border-slate-800/40 rounded-xl overflow-hidden flex items-center justify-center flex-col";
+    minHeightStyle = "min-height: 250px; aspect-ratio: 300/250;";
+    break;
+  case 'mid-article':
+    // Responsive/In-Article (usually 300x250 or native responsive)
+    containerClasses = "w-full my-8 bg-slate-900/40 border border-slate-800/40 rounded-xl overflow-hidden flex items-center justify-center flex-col";
+    minHeightStyle = "min-height: 280px;";
+    break;
+}
+---
+
+<div 
+  class={`relative transition-all duration-300 ${containerClasses}`}
+  style={minHeightStyle}
+  id={id}
+>
+  <!-- Ad label to satisfy Google AdSense policy -->
+  <span class="absolute top-2 left-3 text-[9px] font-medium tracking-widest text-slate-500 uppercase">
+    {label}
+  </span>
+
+  <!-- Content placeholder (simulated Ad Slot) -->
+  <div class="flex flex-col items-center justify-center p-4 text-center">
+    <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center mb-1">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </div>
+    <span class="text-xs text-slate-400 font-medium">Google AdSense Partner Unit</span>
+    <span class="text-[10px] text-slate-600 mt-0.5">Optimized dimensions to avoid CLS</span>
+  </div>
+  
+  <!-- Active AdSense Code Placement (Commented out until live)
+  <ins class="adsbygoogle"
+       style="display:block; text-align:center;"
+       data-ad-layout="in-article"
+       data-ad-format="fluid"
+       data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+       data-ad-slot="XXXXXXXXXX"></ins>
+  <script>
+       (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+  -->
+</div>

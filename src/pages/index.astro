@@ -1,0 +1,146 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ToolCard from '../components/ToolCard.astro';
+import AdPlacement from '../components/AdPlacement.astro';
+import { getCollection } from 'astro:content';
+
+const allTools = await getCollection('tools');
+
+// Get list of unique categories
+const categories = Array.from(new Set(allTools.map(t => t.data.category)));
+
+// Sort tools by dateAdded descending
+const sortedTools = [...allTools].sort((a, b) => 
+  new Date(b.data.dateAdded).getTime() - new Date(a.data.dateAdded).getTime()
+);
+
+const pageTitle = "AIPioneerHub - Premium AI Tools Directory & Reviews";
+const pageDescription = "Explore the ultimate list of AI tools for copywriting, development, image generation, audio creation, and video production. Detailed reviews and specifications.";
+
+// Generate JSON-LD WebSite & Search Schema
+const websiteSchema = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "AIPioneerHub",
+  "url": Astro.url.origin,
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": `${Astro.url.origin}/?q={search_term_string}`
+    },
+    "query-input": "required name=search_term_string"
+  }
+});
+---
+
+<Layout title={pageTitle} description={pageDescription} schema={websiteSchema}>
+  <!-- Hero Section -->
+  <section class="relative overflow-hidden pt-20 pb-16 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/20 via-[#0b0f19] to-[#0b0f19]">
+    <!-- Ambient light orb -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl -z-10"></div>
+    <div class="absolute top-10 left-1/3 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl -z-10"></div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-xs font-semibold text-slate-300 mb-6">
+        <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+        Curating the Future of AI Software
+      </div>
+      
+      <h1 class="font-outfit font-extrabold text-4xl sm:text-6xl tracking-tight text-white max-w-3xl mx-auto leading-none">
+        Find the Perfect <span class="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">AI Tools</span> for Your Next Project
+      </h1>
+      
+      <p class="mt-6 text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto font-light">
+        A programmatically updated, expert-reviewed index of new AI releases. Compare specifications, pros/cons, and read long-form product reviews.
+      </p>
+
+      <!-- Category quick navigation -->
+      <div class="mt-10 flex flex-wrap justify-center gap-2 max-w-3xl mx-auto">
+        <a href="/" class="px-4 py-2 rounded-xl text-sm font-semibold border border-indigo-500/20 bg-indigo-600/10 text-indigo-300 hover:border-indigo-500/40 transition-all">
+          All Tools ({sortedTools.length})
+        </a>
+        {categories.map((category) => (
+          <a 
+            href={`/category/${category.toLowerCase()}`}
+            class="px-4 py-2 rounded-xl text-sm font-semibold border border-slate-800 bg-slate-900/40 text-slate-300 hover:border-slate-700 hover:text-white transition-all"
+          >
+            {category}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Top Ad Placement (CLS Optimized) -->
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <AdPlacement type="top-banner" />
+  </div>
+
+  <!-- Listings Grid Section -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex flex-col md:flex-row gap-8">
+      
+      <!-- Main Content Area -->
+      <div class="flex-grow">
+        <div class="flex items-center justify-between mb-8 border-b border-slate-800/40 pb-4">
+          <h2 class="text-xl font-bold font-outfit text-white">Latest Tools Added</h2>
+          <span class="text-xs text-slate-400">{sortedTools.length} total indexed tools</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {sortedTools.map((tool) => (
+            <ToolCard tool={{
+              title: tool.data.title,
+              slug: tool.data.slug,
+              description: tool.data.description,
+              category: tool.data.category,
+              subCategory: tool.data.subCategory,
+              pricingType: tool.data.pricingType,
+              tags: tool.data.tags,
+              image: tool.data.image
+            }} />
+          ))}
+        </div>
+      </div>
+
+      <!-- Right Sidebar (For Ads & Related lists) -->
+      <aside class="w-full md:w-[300px] shrink-0">
+        <div class="sticky top-20 space-y-6">
+          <!-- Sidebar Ad Placeholders -->
+          <AdPlacement type="sidebar" />
+          
+          <!-- Quick stats / Info -->
+          <div class="bg-slate-900/20 border border-slate-800/60 rounded-2xl p-5">
+            <h3 class="font-outfit font-bold text-white text-base mb-4">AdSense Compliance</h3>
+            <p class="text-xs text-slate-400 leading-relaxed mb-3">
+              AIPioneerHub is an independent software directory. We index, categorize, and draft comprehensive reviews for software utilizing generative models or artificial intelligence.
+            </p>
+            <p class="text-[11px] text-slate-500 leading-relaxed">
+              We abide by third-party cookie disclosures and personalized advertising rules. See our <a href="/privacy" class="text-indigo-400 hover:underline">Privacy Policy</a>.
+            </p>
+          </div>
+          
+          <!-- Category Quicklinks -->
+          <div class="bg-slate-900/20 border border-slate-800/60 rounded-2xl p-5">
+            <h3 class="font-outfit font-bold text-white text-base mb-3">Explore Collections</h3>
+            <nav class="flex flex-col space-y-2">
+              {categories.map((category) => (
+                <a 
+                  href={`/category/${category.toLowerCase()}`}
+                  class="text-sm text-slate-400 hover:text-indigo-400 transition-colors flex items-center justify-between"
+                >
+                  <span>{category}</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </a>
+              ))}
+            </nav>
+          </div>
+        </div>
+      </aside>
+      
+    </div>
+  </section>
+</Layout>
