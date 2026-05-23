@@ -7,6 +7,29 @@ import { GoogleGenAI } from '@google/genai';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Load .env file manually if it exists locally (safely ignored on Vercel)
+const envPath = path.join(__dirname, '../.env');
+if (fs.existsSync(envPath) && !process.env.GEMINI_API_KEY) {
+  try {
+    const envContent = fs.readFileSync(envPath, 'utf8');
+    envContent.split(/\r?\n/).forEach(line => {
+      const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
+      if (match) {
+        const key = match[1];
+        let value = match[2] || '';
+        if (value.startsWith('"') && value.endsWith('"')) {
+          value = value.slice(1, -1);
+        } else if (value.startsWith("'") && value.endsWith("'")) {
+          value = value.slice(1, -1);
+        }
+        process.env[key] = value.trim();
+      }
+    });
+  } catch (err) {
+    console.warn("Failed to read local .env file:", err.message);
+  }
+}
+
 // Ensure target output directory exists
 const outputDir = path.join(__dirname, '../src/content/tools');
 if (!fs.existsSync(outputDir)) {

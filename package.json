@@ -7,7 +7,8 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "scrape": "node scripts/scrape-and-write.js",
+    "build": "node scripts/scrape-and-write.js && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },
